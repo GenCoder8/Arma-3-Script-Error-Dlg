@@ -1,5 +1,5 @@
 class CfgPatches {
-	class ErrorDlg {
+	class ScriptErrorDlg {
 		units[] = {};
 		weapons[] = {};
 		requiredVersion = 0.1;
@@ -12,15 +12,15 @@ class CfgPatches {
 
 class CfgFunctions
 {
- class ErrorDlg
+ class ScriptErrorDlg
  {
   class InitFns
   {
 
    class InitDlg
    {
-	file = "errorDlg\modinit.sqf";
-	preStart = 1; // Run on arma start
+	file = "scriptErrorDlg\modinit.sqf";
+	// preStart = 1; // Run on arma start
     preInit = 1; // Run on mission start
     recompile = 1;
    };

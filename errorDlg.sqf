@@ -9,11 +9,28 @@ loggedErrors = createhashmap;
 
 openScriptErrorDlg =
 {
-_display = findDisplay SCRIPT_ERROR_DLG;
+private _display = findDisplay SCRIPT_ERROR_DLG;
 
 if(!isnull _display) exitWith {}; // Already open
 
 createDialog "ScriptErrorDlg";
+
+call scriptErrorDlgPopulate;
+
+};
+
+closeScriptErrorDlg =
+{
+ closeDialog 0;
+};
+
+scriptErrorDlgPopulate =
+{
+
+private _display = findDisplay SCRIPT_ERROR_DLG;
+private _tv = _display displayCtrl 1200;
+
+tvClear _tv;
 
 {
 
@@ -91,6 +108,15 @@ _varvalue = _y;
 
 };
 
+scriptErrorDlgReset =
+{
+
+ loggedErrors = createhashmap;
+
+ call scriptErrorDlgPopulate; // Clears
+
+};
+
 
 addMissionEventHandler ["ScriptError",
 {
@@ -99,6 +125,16 @@ addMissionEventHandler ["ScriptError",
 _this call logErrorInfo;
 
 
+[] spawn
+{
+sleep 0.2;
+
+diag_log "allCutLayers:";
+{
+ diag_log format ["layer: %1", _x];
+} foreach allCutLayers;
+
+};
 
 }];
 
@@ -127,11 +163,17 @@ _this call scriptErrorDlgAdd;
 
 waituntil { !isnull (findDisplay 46) };
 
+diag_log format["Error dlg setting key '%1' ", errDlgkey];
 
+if(!isnil "errDlgkey") then
+{
+findDisplay 46 displayRemoveEventHandler ["keyDown",errDlgkey];
+};
 
 errDlgkey = findDisplay 46 displayAddEventHandler ["KeyDown",
 {
 params ["_disp", "_key", "_shift", "_ctrl", "_alt"];
+
  
  _handled = false;
 
