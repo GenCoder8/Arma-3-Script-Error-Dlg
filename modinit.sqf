@@ -1,4 +1,4 @@
 
-diag_log "MOD INIT CALLED! 123 456 777";
+// diag_log "MOD INIT CALLED!";
 
 execvm "scriptErrorDlg\errorDlg.sqf";
