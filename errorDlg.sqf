@@ -67,7 +67,7 @@ _errPosText =
 };
 
 
-_tvmainindex = _tv tvAdd [[], format ["Error in %1 %2 %3", _msg, _file call _pathToFilename, _line ] ];
+_tvmainindex = _tv tvAdd [[], format ["Error %1 in %2 %3", _msg, _file call _pathToFilename, _line ] ];
 
 for "_i" from (count _trace - 1) to 0 step -1 do
 {
@@ -207,7 +207,7 @@ if(visibleMap) then
  _holderDisp = 12;
 };
 
-systemchat format ["_holderDisp %1",_holderDisp];
+// systemchat format ["_holderDisp %1",_holderDisp];
 
 _prevBut = uinamespace getVariable ["openErrsButton", controlNull];
 if(!isnull _prevBut) then
@@ -221,7 +221,7 @@ if(isnull (findDisplay _holderDisp)) then { systemchat "disp err"; };
 
 
 _openErrsButton = (findDisplay _holderDisp) ctrlCreate ["RscImgButton", -1, controlNull];
-_openErrsButton ctrlSetPosition [safezoneX + 0.2, safezoneY + 0.2 , 0.2, 0.2];
+_openErrsButton ctrlSetPosition [safezoneX + 0.01, safezoneY + 0.5 , 0.2, 0.2];
 _openErrsButton ctrlSetText "errors.paa";
 _openErrsButton ctrlCommit 0;
 
@@ -232,4 +232,7 @@ uinamespace setVariable ["openErrsButton", _openErrsButton];
 
 
 };
+
+// Clears error button, at mission start
+call scriptErrorDlgOnNew;
 
