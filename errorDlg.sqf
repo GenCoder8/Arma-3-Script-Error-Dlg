@@ -115,6 +115,8 @@ scriptErrorDlgReset =
 
  call scriptErrorDlgPopulate; // Clears
 
+ call scriptErrorDlgOnNew;
+
 };
 
 
@@ -155,6 +157,7 @@ loggedErrors set [_errid, _this];
 
 _this call scriptErrorDlgAdd;
 
+call scriptErrorDlgOnNew;
 
 };
 
@@ -163,18 +166,12 @@ _this call scriptErrorDlgAdd;
 
 waituntil { !isnull (findDisplay 46) };
 
-diag_log format["Error dlg setting key '%1' ", errDlgkey];
 
-if(!isnil "errDlgkey") then
-{
-findDisplay 46 displayRemoveEventHandler ["keyDown",errDlgkey];
-};
 
 errDlgkey = findDisplay 46 displayAddEventHandler ["KeyDown",
 {
 params ["_disp", "_key", "_shift", "_ctrl", "_alt"];
 
- 
  _handled = false;
 
  if(_key == DIK_Z && _ctrl) then
@@ -186,3 +183,53 @@ params ["_disp", "_key", "_shift", "_ctrl", "_alt"];
 
  _handled
 }];
+
+
+addMissionEventHandler ["Map",
+{
+ params ["_mapIsOpened", "_mapIsForced"];
+
+[] spawn
+{
+ sleep 0.01; // must have delay for visibleMap
+
+ call scriptErrorDlgOnNew;
+};
+
+}];
+
+scriptErrorDlgOnNew =
+{
+
+_holderDisp = 46;
+if(visibleMap) then
+{
+ _holderDisp = 12;
+};
+
+systemchat format ["_holderDisp %1",_holderDisp];
+
+_prevBut = uinamespace getVariable ["openErrsButton", controlNull];
+if(!isnull _prevBut) then
+{
+ ctrlDelete _prevBut;
+};
+
+if(count loggedErrors == 0) exitWith {}; // No errors
+
+if(isnull (findDisplay _holderDisp)) then { systemchat "disp err"; };
+
+
+_openErrsButton = (findDisplay _holderDisp) ctrlCreate ["RscImgButton", -1, controlNull];
+_openErrsButton ctrlSetPosition [safezoneX + 0.2, safezoneY + 0.2 , 0.2, 0.2];
+_openErrsButton ctrlSetText "errors.paa";
+_openErrsButton ctrlCommit 0;
+
+
+_openErrsButton buttonSetAction " call openScriptErrorDlg; ";
+
+uinamespace setVariable ["openErrsButton", _openErrsButton];
+
+
+};
+
