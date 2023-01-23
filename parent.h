@@ -2123,3 +2123,42 @@ class RscMapControl
 	showMarkers = 1;
 };
 
+
+class ControlsGroupNoScrollBars: RscControlsGroup
+{
+	idc = 2300;
+	x = -10 * UI_GRID_W + UI_GRID_X;
+	y = 11 * UI_GRID_H + UI_GRID_Y;
+	w = 40 * UI_GRID_W;
+	h = 9 * UI_GRID_H;
+	class Controls
+	{
+	};
+	
+	class VScrollbar
+	{
+		color[] = 
+		{
+			1,
+			1,
+			1,
+			0
+		};
+		width = 0.021;
+		autoScrollEnabled = 1;
+	};
+	
+	class HScrollbar
+	{
+		color[] = 
+		{
+			1,
+			1,
+			1,
+			0
+		};
+		height = 0.028;
+	};
+
+	
+};
