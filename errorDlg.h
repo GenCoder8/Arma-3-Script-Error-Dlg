@@ -10,8 +10,6 @@
 #define UI_GRID_WAbs	(0)
 #define UI_GRID_HAbs	(0)
 
-import RscTree;
-
 
 /* #Mucito
 $[
@@ -22,6 +20,10 @@ $[
 	[1601,"",[2,"Reset error list",["39 * UI_GRID_W + UI_GRID_X","2 * UI_GRID_H + UI_GRID_Y","7.5 * UI_GRID_W","2 * UI_GRID_H"],[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1],"","-1"],["action = |call scriptErrorDlgReset;|;"]]
 ]
 */
+
+
+import RscTree;
+
 
 class RscImgButton: RscButton
 {
@@ -131,7 +133,7 @@ class RscButton_1601: RscButton
 
 class RscButton_1600: RscButton
 {
- action = "call closeScriptErrorDlg";
+ action = "call closeScriptErrorDlg;";
 
  idc = 1600;
  text = "Close"; //--- ToDo: Localize;
