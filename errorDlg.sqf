@@ -1,6 +1,7 @@
 
 #include "\a3\ui_f\hpp\definedikcodes.inc"
 #include "defines.h"
+#include "resources.h"
 
 
 loggedErrors = createhashmap;
@@ -16,6 +17,7 @@ if(!isnull _display) exitWith {}; // Already open
 createDialog "ScriptErrorDlg";
 
 call scriptErrorDlgPopulate;
+
 
 };
 
@@ -46,7 +48,6 @@ private _display = findDisplay SCRIPT_ERROR_DLG;
 private _tv = _display displayCtrl 1200;
 
 
-
 _this params ["_msg","_file","_line","_offset","_filecontent","_trace"];
 
 
@@ -56,18 +57,27 @@ params ["_functionName"];
 
 private _mp = getMissionPath "";
 
-private _filename = _functionName select [ count _mp,  count _functionName ];
+private _filename = _functionName select [ count _mp, count _functionName ];
 
 _filename
 };
 
 _errPosText =
 {
- format["%1 at line %2",_functionName call _pathToFilename,_lineNumber]
+ format["%1 at line %2", _functionName call _pathToFilename, _lineNumber]
 };
 
+_emsgStart = format ["Error %1", _msg];
 
-_tvmainindex = _tv tvAdd [[], format ["Error %1 in %2 %3", _msg, _file call _pathToFilename, _line ] ];
+if(count _file > 0) then
+{
+_emsgStart = _emsgStart + format [" in %1", _file call _pathToFilename ];
+};
+
+_emsgStart = _emsgStart + format [" line: %1", _line ];
+
+
+_tvmainindex = _tv tvAdd [[], _emsgStart ];
 
 for "_i" from (count _trace - 1) to 0 step -1 do
 {
@@ -171,7 +181,7 @@ waituntil { !isnull (findDisplay 46) };
 errDlgkey = findDisplay 46 displayAddEventHandler ["KeyDown",
 {
 params ["_disp", "_key", "_shift", "_ctrl", "_alt"];
-
+ 
  _handled = false;
 
  if(_key == DIK_Z && _ctrl) then
@@ -222,7 +232,11 @@ if(isnull (findDisplay _holderDisp)) then { systemchat "disp err"; };
 
 _openErrsButton = (findDisplay _holderDisp) ctrlCreate ["RscImgButton", -1, controlNull];
 _openErrsButton ctrlSetPosition [safezoneX + 0.01, safezoneY + 0.5 , 0.2, 0.2];
-_openErrsButton ctrlSetText "errors.paa";
+
+
+_openErrsButton ctrlSetText ERR_IMAGE;
+
+
 _openErrsButton ctrlCommit 0;
 
 
