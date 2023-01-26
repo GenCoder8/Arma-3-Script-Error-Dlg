@@ -67,7 +67,7 @@ _errPosText =
  format["%1 at line %2", _functionName call _pathToFilename, _lineNumber]
 };
 
-_emsgStart = format ["Error %1", _msg];
+private _emsgStart = format ["Error %1", _msg];
 
 if(count _file > 0) then
 {
