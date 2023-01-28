@@ -72,6 +72,10 @@ private _emsgStart = format ["Error %1", _msg];
 if(count _file > 0) then
 {
 _emsgStart = _emsgStart + format [" in %1", _file call _pathToFilename ];
+}
+else // For errors without a file
+{
+_emsgStart = _emsgStart + format [" in "" ... %1 ... "" ", trim (_filecontent select [_offset - 16,32]) ];
 };
 
 _emsgStart = _emsgStart + format [" line: %1", _line ];
@@ -159,7 +163,16 @@ logErrorInfo =
 
 private _errid = format ["%1%2", _file, _line];
 
-// systemchat _errid;
+if(count _file == 0) then // For console errors
+{
+ private _code = _filecontent;
+
+ if(count _code > 256) then { _code = _code select [0,256]; }; // Some limit 
+
+ _errid = format ["%1%2", _code, _line];
+};
+
+ systemchat _errid;
 
 if(count (loggedErrors getorDefault [_errid,[]]) > 0) exitWith {}; // Already logged
 
@@ -235,8 +248,6 @@ _openErrsButton ctrlSetPosition [safezoneX + 0.01, safezoneY + 0.5 , 0.2, 0.2];
 
 
 _openErrsButton ctrlSetText ERR_IMAGE;
-
-
 _openErrsButton ctrlCommit 0;
 
 
