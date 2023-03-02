@@ -4,7 +4,7 @@
 #include "resources.h"
 
 
-loggedErrors = createhashmap;
+loggedErrors = [];
 
 
 
@@ -36,7 +36,7 @@ tvClear _tv;
 
 {
 
- _y call scriptErrorDlgAdd; 
+ _x call scriptErrorDlgAdd; 
 
 } foreach loggedErrors;
 
@@ -44,11 +44,12 @@ tvClear _tv;
 
 scriptErrorDlgAdd =
 {
+params ["_errId","_msg","_file","_line","_offset","_filecontent","_trace"];
+
+
 private _display = findDisplay SCRIPT_ERROR_DLG;
 private _tv = _display displayCtrl 1200;
 
-
-_this params ["_msg","_file","_line","_offset","_filecontent","_trace"];
 
 
 _pathToFilename =
@@ -64,7 +65,7 @@ _filename
 
 _errPosText =
 {
- format["%1 at line %2", _functionName call _pathToFilename, _lineNumber]
+ format["%1 at line %2", _file call _pathToFilename, _line]
 };
 
 private _emsgStart = format ["Error %1", _msg];
@@ -75,7 +76,17 @@ _emsgStart = _emsgStart + format [" in %1", _file call _pathToFilename ];
 }
 else // For errors without a file
 {
-_emsgStart = _emsgStart + format [" in "" ... %1 ... "" ", trim (_filecontent select [_offset - 16,32]) ];
+//_emsgStart = _emsgStart + format [" in "" ... %1 ... "" ", trim (_filecontent) ];
+
+systemchat format [">>> %1 %2", _offset, _line];
+
+_shortText = _filecontent;
+if(count _filecontent > 32) then
+{
+ _shortText = _filecontent select [_offset - 16,32];
+};
+
+_emsgStart = _emsgStart + format [" in "" ... %1 ... "" ", trim _shortText ];
 };
 
 _emsgStart = _emsgStart + format [" line: %1", _line ];
@@ -85,11 +96,11 @@ _tvmainindex = _tv tvAdd [[], _emsgStart ];
 
 for "_i" from (count _trace - 1) to 0 step -1 do
 {
- (_trace # _i) params ["_functionName", "_lineNumber", "_scopeName", "_variables"];
+ (_trace # _i) params ["_file", "_line", "_scopeName", "_variables"];
 
 // diag_log "-------------------------------------------------------------------------------------------";
 
- //diag_log format ["%1 at %2", _functionName, _lineNumber];
+//diag_log format [">>>>>>>>!!!!>>>>>>>>>> %1 %2", _file, _line, (_trace # _i)];
 
  _tvsubindex = _tv tvAdd [[_tvmainindex], format["%1", call _errPosText] ];
 
@@ -125,7 +136,7 @@ _varvalue = _y;
 scriptErrorDlgReset =
 {
 
- loggedErrors = createhashmap;
+ loggedErrors = [];
 
  call scriptErrorDlgPopulate; // Clears
 
@@ -160,8 +171,8 @@ logErrorInfo =
 {
  params ["_msg","_file","_line","_offset","_filecontent","_trace"];
 
-
 private _errid = format ["%1%2", _file, _line];
+
 
 if(count _file == 0) then // For console errors
 {
@@ -172,13 +183,17 @@ if(count _file == 0) then // For console errors
  _errid = format ["%1%2", _code, _line];
 };
 
- systemchat _errid;
+ // systemchat _errid;
 
-if(count (loggedErrors getorDefault [_errid,[]]) > 0) exitWith {}; // Already logged
+if((loggedErrors findif { (_x # 0) == _errid }) >= 0) exitWith {}; // Already logged
 
-loggedErrors set [_errid, _this];
 
-_this call scriptErrorDlgAdd;
+private _earr = [_errid] + _this;
+
+loggedErrors pushback _earr;
+
+
+_earr call scriptErrorDlgAdd;
 
 call scriptErrorDlgOnNew;
 
@@ -245,8 +260,6 @@ if(isnull (findDisplay _holderDisp)) then { systemchat "disp err"; };
 
 _openErrsButton = (findDisplay _holderDisp) ctrlCreate ["RscImgButton", -1, controlNull];
 _openErrsButton ctrlSetPosition [safezoneX + 0.01, safezoneY + 0.5 , 0.2, 0.2];
-
-
 _openErrsButton ctrlSetText ERR_IMAGE;
 _openErrsButton ctrlCommit 0;
 
