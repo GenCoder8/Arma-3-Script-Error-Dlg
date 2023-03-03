@@ -183,7 +183,6 @@ if(count _file == 0) then // For console errors
  _errid = format ["%1%2", _code, _line];
 };
 
- // systemchat _errid;
 
 if((loggedErrors findif { (_x # 0) == _errid }) >= 0) exitWith {}; // Already logged
 
