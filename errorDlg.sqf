@@ -16,6 +16,15 @@ if(!isnull _display) exitWith {}; // Already open
 
 createDialog "ScriptErrorDlg";
 
+_display = findDisplay SCRIPT_ERROR_DLG;
+
+private _ctrlsGroup = _display displayCtrl 1205;
+
+private _tvCtrl = _display ctrlCreate ["RscTree", 1200, _ctrlsGroup];
+_tvCtrl ctrlSetPosition [0,0,1.5,0.55];
+_tvCtrl ctrlCommit 0;
+
+
 call scriptErrorDlgPopulate;
 
 
@@ -51,6 +60,7 @@ private _display = findDisplay SCRIPT_ERROR_DLG;
 private _tv = _display displayCtrl 1200;
 
 
+#define MAX_FILENAME_SHOWN 64
 
 _pathToFilename =
 {
@@ -58,9 +68,13 @@ params ["_functionName"];
 
 private _mp = getMissionPath "";
 
-private _filename = _functionName select [ count _mp, count _functionName ];
+//private _filename = _functionName select [ count _mp, count _functionName ];
 
-_filename
+_fl = count _functionName;
+
+_str = if(_fl > MAX_FILENAME_SHOWN) then {  format[" ...%1 ",  _functionName select [MAX_FILENAME_SHOWN/2,_fl] ] } else { _functionName };
+
+_str
 };
 
 _errPosText =

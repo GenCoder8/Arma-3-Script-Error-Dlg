@@ -1580,7 +1580,7 @@ class RscControlsGroup
 	w = 1;
 	h = 1;
 	shadow = 0;
-	style = 16;
+		style = 0; // Need this instead of 16 for scrollbar arrows
 };
 
 class ControlsGroupNoScrollBars: RscControlsGroup

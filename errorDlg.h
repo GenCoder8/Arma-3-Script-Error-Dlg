@@ -11,11 +11,11 @@
 #define UI_GRID_HAbs	(0)
 
 
-/* #Mucito
+/* #Beneqo
 $[
 	1.063,
 	["scripterrorsdlg",[["safezoneX","safezoneY","0","0"],"2.5 * pixelW * pixelGrid","2.5 * pixelH * pixelGrid","UI_GRID"],0,0,0],
-	[1200,"ScriptErrorTree : RscTree",[2,"#(argb,8,8,3)color(1,1,1,1)",["38 * UI_GRID_W + UI_GRID_X","5.5 * UI_GRID_H + UI_GRID_Y","25.5 * UI_GRID_W","19.5 * UI_GRID_H"],[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1],"","-1"],[]],
+	[1200,"ScriptErrorTree : RscControlsGroup",[2,"#(argb,8,8,3)color(1,1,1,1)",["38 * UI_GRID_W + UI_GRID_X","5.5 * UI_GRID_H + UI_GRID_Y","25.5 * UI_GRID_W","19.5 * UI_GRID_H"],[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1],"","-1"],[]],
 	[1600,"",[2,"Close",["39.5 * UI_GRID_W + UI_GRID_X","27 * UI_GRID_H + UI_GRID_Y","7.5 * UI_GRID_W","2 * UI_GRID_H"],[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1],"","-1"],["action = |call closeScriptErrorDlg|;"]],
 	[1601,"",[2,"Reset error list",["39 * UI_GRID_W + UI_GRID_X","2 * UI_GRID_H + UI_GRID_Y","7.5 * UI_GRID_W","2 * UI_GRID_H"],[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1],"","-1"],["action = |call scriptErrorDlgReset;|;"]]
 ]
@@ -57,7 +57,7 @@ color[] = {1,1,1,1};
 #define SEDLG_W 0.85
 #define SEDLG_H 0.85
 #define SEDLG_X (safeZoneX + safezoneW - SEDLG_W - 0.01)
-#define SEDLG_Y (safeZoneY + (safezoneH / 2) - (SEDLG_H / 2) )
+#define SEDLG_Y (safeZoneY + safezoneH - SEDLG_H - 0.01)
 
 
 
@@ -109,14 +109,14 @@ class ScriptErrorCtrlGroup: ControlsGroupNoScrollBars
 class Controls
 {
 
-class ScriptErrorTree : RscTree
+class TreeControlsGroup : RscControlsGroup
 {
- idc = 1200;
+ idc = 1205;
  text = "#(argb,8,8,3)color(1,1,1,1)";
  x = 0;
  y = SEDLG_BUT_H;
  w = 0.8;
- h = 0.8 - (SEDLG_BUT_H * 2);
+ h = 0.8 - (SEDLG_BUT_H * 2) + 0.04;
 };
 
 class RscButton_1601: RscButton
