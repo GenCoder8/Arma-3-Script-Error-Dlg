@@ -28,6 +28,39 @@ _tvCtrl ctrlCommit 0;
 call scriptErrorDlgPopulate;
 
 
+
+_tvCtrl ctrlAddEventHandler ["TreeSelChanged",
+{
+params ["_tvCtrl","_path"];
+
+private _display = findDisplay SCRIPT_ERROR_DLG;
+
+private _gotoButon = _display displayCtrl 1602;
+
+_gotoButon ctrlEnable false;
+
+private _filename = _tvCtrl tvData _path;
+private _line = _tvCtrl tvValue _path;
+
+if(_filename != "") then
+{
+ _gotoButon ctrlEnable true;
+};
+
+//systemchat format ["_line %1",  _line];
+
+}];
+
+/*
+_tvCtrl ctrlAddEventHandler ["TreeDblClick", 
+{ 
+params ["_tvCtrl","_path"];
+
+hint str (_tvCtrl tvData _path); 
+
+}];
+*/
+
 };
 
 closeScriptErrorDlg =
@@ -105,8 +138,17 @@ _emsgStart = _emsgStart + format [" in "" ... %1 ... "" ", trim _shortText ];
 
 _emsgStart = _emsgStart + format [" line: %1", _line ];
 
+_gotoFile =
+{
+params ["_path","_file","_line"];
+_tv tvSetData [_path, _file];
+_tv tvSetValue [_path, _line];
+
+};
 
 _tvmainindex = _tv tvAdd [[], _emsgStart ];
+
+[[_tvmainindex],_file,_line] call _gotoFile;
 
 for "_i" from (count _trace - 1) to 0 step -1 do
 {
@@ -117,6 +159,9 @@ for "_i" from (count _trace - 1) to 0 step -1 do
 //diag_log format [">>>>>>>>!!!!>>>>>>>>>> %1 %2", _file, _line, (_trace # _i)];
 
  _tvsubindex = _tv tvAdd [[_tvmainindex], format["%1", call _errPosText] ];
+
+[[_tvmainindex,_tvsubindex],_file,_line] call _gotoFile;
+
 
 {
  _varname = _x;
@@ -138,7 +183,11 @@ _varvalue = _y;
 };
 
 
- _tv tvAdd [[_tvmainindex,_tvsubindex], format ["%1 %2 = %3",_varType,_varname,_varvalue]];
+private _index = _tv tvAdd [[_tvmainindex,_tvsubindex], format ["%1 %2 = %3",_varType,_varname,_varvalue] ];
+
+
+//_tv tvSetData [[_tvmainindex,_tvsubindex,_index], "TEEEEEEEEEEEST!"];
+
 
 } foreach _variables;
 
@@ -163,7 +212,7 @@ addMissionEventHandler ["ScriptError",
 {
  params ["_msg","_file","_line","_offset","_filecontent","_trace"];
 
-_this call logErrorInfo;
+_this call logErrorInfoScript;
 
 
 [] spawn
@@ -181,11 +230,12 @@ diag_log "allCutLayers:";
 
 
 
-logErrorInfo =
+logErrorInfoScript =
 {
  params ["_msg","_file","_line","_offset","_filecontent","_trace"];
 
-private _errid = format ["%1%2", _file, _line];
+
+private _errid = format ["%1_%2", _file, _line];
 
 
 if(count _file == 0) then // For console errors
@@ -197,11 +247,31 @@ if(count _file == 0) then // For console errors
  _errid = format ["%1%2", _code, _line];
 };
 
+[_errid, _this] call logErrorInfoBase;
+
+
+};
+
+logErrorInfoCustom =
+{
+ params ["_msg"];
+
+private _errid = _msg;
+
+[_errid,[_msg,"",0, 0, "", diag_stacktrace]] call logErrorInfoBase;
+
+};
+
+logErrorInfoBase =
+{
+ params ["_errid","_errInfo"];
 
 if((loggedErrors findif { (_x # 0) == _errid }) >= 0) exitWith {}; // Already logged
 
 
-private _earr = [_errid] + _this;
+private _earr = [_errid] + _errInfo;
+
+
 
 loggedErrors pushback _earr;
 
@@ -211,6 +281,34 @@ _earr call scriptErrorDlgAdd;
 call scriptErrorDlgOnNew;
 
 };
+
+
+scriptErrorDlgGotoLine =
+{
+params ["_file"];
+
+private _display = findDisplay SCRIPT_ERROR_DLG;
+
+private _tvCtrl = _display displayCtrl 1200;
+
+private _selPath = tvCurSel _tvCtrl;
+
+private _filename = _tvCtrl tvData _selPath;
+private _line = _tvCtrl tvValue _selPath;
+
+
+
+systemchat format ["_line %1 %2",  _filename, _line];
+
+
+"ArmaTools" callExtension ["ExecuteFile",[ "C:\\Program Files\\Notepad++\\notepad++.exe", _filename, "-n" + _line]]
+
+
+};
+
+
+
+
 
 
 
@@ -283,6 +381,9 @@ uinamespace setVariable ["openErrsButton", _openErrsButton];
 
 
 };
+
+
+
 
 // Clears error button, at mission start
 call scriptErrorDlgOnNew;

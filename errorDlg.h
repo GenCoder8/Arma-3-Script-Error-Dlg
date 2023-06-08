@@ -143,6 +143,18 @@ class RscButton_1600: RscButton
  h = SEDLG_BUT_H;
 };
 
+class RscButton_1602: RscButton
+{
+	action = "call scriptErrorDlgGotoLine;";
+
+	idc = 1602;
+	text = "Goto file & line"; //--- ToDo: Localize;
+ x = 0.55;
+ y = 0;
+ w = SEDLG_BUT_W;
+ h = SEDLG_BUT_H;
+};
+
 };
 
 };
