@@ -38,6 +38,12 @@ private _display = findDisplay SCRIPT_ERROR_DLG;
 private _gotoButon = _display displayCtrl 1602;
 
 _gotoButon ctrlEnable false;
+_gotoButon ctrlShow false;
+
+if(("ArmaTools" callExtension "isLoaded") == "true") then
+{
+ _gotoButon ctrlShow true;
+};
 
 private _filename = _tvCtrl tvData _path;
 private _line = _tvCtrl tvValue _path;
@@ -298,10 +304,10 @@ private _line = _tvCtrl tvValue _selPath;
 
 
 
-systemchat format ["_line %1 %2",  _filename, _line];
+// systemchat format ["_line %1 %2",  _filename, _line];
 
 
-"ArmaTools" callExtension ["ExecuteFile",[ "C:\\Program Files\\Notepad++\\notepad++.exe", _filename, "-n" + _line]]
+"ArmaTools" callExtension ["ExecuteFile",["C:\\Program Files\\Notepad++\\notepad++.exe", _filename, "-n" + (str _line)]];
 
 
 };
