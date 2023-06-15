@@ -156,7 +156,7 @@ _tv tvSetValue [_path, _line];
 
 };
 
-_tvmainindex = _tv tvAdd [[], _emsgStart ];
+private _tvmainindex = _tv tvAdd [[], _emsgStart ];
 
 [[_tvmainindex],_file,_line] call _gotoFile;
 
@@ -168,28 +168,27 @@ for "_i" from (count _trace - 1) to 0 step -1 do
 
 //diag_log format [">>>>>>>>!!!!>>>>>>>>>> %1 %2", _file, _line, (_trace # _i)];
 
- _tvsubindex = _tv tvAdd [[_tvmainindex], format["%1", call _errPosText] ];
+private _tvsubindex = _tv tvAdd [[_tvmainindex], format["%1", call _errPosText] ];
 
 [[_tvmainindex,_tvsubindex],_file,_line] call _gotoFile;
 
 
 {
- _varname = _x;
- _varvalue = "nil";
- _varType = "";
+private _varname = _x;
+private _varvalue = "nil";
+private _varType = "";
 
 if(!isnil "_y") then
 {
 _varType = typename _y;
 
-if(_varType == "CODE") then
+switch (_varType) do
 {
- _varvalue = "Code";
-}
-else
-{
-_varvalue = _y;
+ case "CODE": { _varvalue = "Code"; };
+ case "STRING": {  _varvalue = '"' + _varvalue + '"'; };
+ default { _varvalue = _y; };
 };
+
 };
 
 
