@@ -6,7 +6,14 @@
 
 loggedErrors = [];
 
-
+if(profilenamespace getVariable ["errDlgEditorPath",""] == "") then
+{
+profilenamespace setVariable ["errDlgEditorPath","C:\\Program Files\\Notepad++\\notepad++.exe"];
+};
+if(profilenamespace getVariable ["errDlgEditorArgs",""] == "") then
+{
+profilenamespace setVariable ["errDlgEditorArgs","%1 -n%2"];
+};
 
 openScriptErrorDlg =
 {
@@ -310,14 +317,63 @@ private _line = _tvCtrl tvValue _selPath;
 // systemchat format ["_line '%1' %2",  _filename, _line];
 
 
-"ArmaTools" callExtension ["ExecuteFile",["C:\\Program Files\\Notepad++\\notepad++.exe", _filename, "-n" + (str _line)]];
 
+//_runLine = format ["C:\\Program Files\\Notepad++\\notepad++.exe %1 -n%2", _filename, (str _line)];
+
+private _editorPath = profilenamespace getVariable "errDlgEditorPath";
+private _editorArgs = profilenamespace getVariable "errDlgEditorArgs";
+
+systemchat format ["_editorPath '%1' ", _editorPath];
+systemchat format ["_editorArgs '%1' ", _editorArgs];
+
+private _argLine = format [_editorArgs,  _filename , _line ];
+
+systemchat format ["args set '%1' ", _argLine];
+
+private _ret = "ArmaTools" callExtension ["ExecuteFile", [_editorPath, _argLine] ];
+
+systemchat (str _ret);
+
+
+
+// ["C:\\Program Files\\Notepad++\\notepad++.exe", _filename, "-n" + (str _line)]
+
+};
+
+
+openScriptErrSettings =
+{
+createDialog "SEDlgSettings";
+
+private _display = findDisplay SCRIPT_ERROR_DLG_SET;
+
+private _editorPath = _display displayCtrl 1400;
+private _editorArgs = _display displayCtrl 1401;
+
+_editorPath ctrlSetText (profilenamespace getVariable ["errDlgEditorPath",""]);
+
+_editorArgs ctrlSetText (profilenamespace getVariable ["errDlgEditorArgs",""]);
 
 };
 
 
 
+closeScriptErrSettings =
+{
 
+private _display = findDisplay SCRIPT_ERROR_DLG_SET;
+
+private _editorPath = _display displayCtrl 1400;
+private _editorArgs = _display displayCtrl 1401;
+
+profilenamespace setVariable ["errDlgEditorPath",ctrlText _editorPath];
+
+profilenamespace setVariable ["errDlgEditorArgs",ctrlText _editorArgs];
+
+
+closeDialog 0;
+
+};
 
 
 
