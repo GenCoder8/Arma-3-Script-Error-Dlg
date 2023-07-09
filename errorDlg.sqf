@@ -326,13 +326,15 @@ private _editorArgs = profilenamespace getVariable "errDlgEditorArgs";
 systemchat format ["_editorPath '%1' ", _editorPath];
 systemchat format ["_editorArgs '%1' ", _editorArgs];
 
+diag_log format ["_filename %1 %2 ", _filename, _editorArgs];
+
 private _argLine = format [_editorArgs,  _filename , _line ];
 
-systemchat format ["args set '%1' ", _argLine];
+diag_log format ["args set <%1> %2 ", _argLine, "test"];
 
 private _ret = "ArmaTools" callExtension ["ExecuteFile", [_editorPath, _argLine] ];
 
-systemchat (str _ret);
+diag_log (str _ret);
 
 
 
