@@ -1,4 +1,6 @@
 
+errorDlgVersion = "0.9.1";
+
 #include "parent.h"
 
 #include "defines.h"
@@ -164,6 +166,15 @@ class RscButton_1602: RscButton
  x = 0.55;
  y = 0;
  w = SEDLG_BUT_W;
+ h = SEDLG_BUT_H;
+};
+
+class Version : RscText
+{
+text = __EVAL("Script error dialog v" + getText (missionConfigFile >> "errorDlgVersion") + " by GC ");
+ x = 0.40;
+ y = 1 - 0.25;
+ w = 0.3;
  h = SEDLG_BUT_H;
 };
 
