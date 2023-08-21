@@ -1,5 +1,4 @@
 
-errorDlgVersion = "0.9.1";
 
 #include "parent.h"
 
@@ -171,7 +170,8 @@ class RscButton_1602: RscButton
 
 class Version : RscText
 {
-text = __EVAL("Script error dialog v" + getText (missionConfigFile >> "errorDlgVersion") + " by GC ");
+// text = "");
+ idc = 1604;
  x = 0.40;
  y = 1 - 0.25;
  w = 0.3;

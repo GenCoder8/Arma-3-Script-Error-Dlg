@@ -29,5 +29,6 @@ class CfgFunctions
  };
 };
 
+#include "conf.h"
 #include "errorDlg.h"
 

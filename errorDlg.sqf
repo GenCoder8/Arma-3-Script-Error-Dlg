@@ -12,7 +12,7 @@ profilenamespace setVariable ["errDlgEditorPath","C:\\Program Files\\Notepad++\\
 };
 if(profilenamespace getVariable ["errDlgEditorArgs",""] == "") then
 {
-profilenamespace setVariable ["errDlgEditorArgs","%1 -n%2"];
+profilenamespace setVariable ["errDlgEditorArgs",'"%1" "-n%2"'];
 };
 
 openScriptErrorDlg =
@@ -67,6 +67,13 @@ if(_filename != "") then
 //systemchat format ["_line %1",  _line];
 
 }];
+
+
+private _credit = _display displayCtrl 1604;
+private _ctext = getText (missionConfigFile >> "errorDlgVersion");
+if(_ctext == "") then { _ctext = getText (configFile >> "errorDlgVersion"); };
+
+_credit ctrlSetText format ["Script error dialog v%1 by GC ", _ctext];
 
 /*
 _tvCtrl ctrlAddEventHandler ["TreeDblClick", 
