@@ -3,7 +3,7 @@ class CfgPatches {
 		units[] = {};
 		weapons[] = {};
 		requiredVersion = 0.1;
-		author[] = {"GC8"};
+		author = "GC8";
 		authorUrl = "armagc.blogspot.com";
 
       requiredAddons[] = {};

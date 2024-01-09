@@ -199,7 +199,7 @@ _varType = typename _y;
 switch (_varType) do
 {
  case "CODE": { _varvalue = "Code"; };
- case "STRING": {  _varvalue = '"' + _varvalue + '"'; };
+ case "STRING": {  _varvalue = '"' + _y + '"'; };
  default { _varvalue = _y; };
 };
 
@@ -301,7 +301,10 @@ loggedErrors pushback _earr;
 
 _earr call scriptErrorDlgAdd;
 
+if(!isnil "scriptErrorDlgOnNew") then // In case too early for mission
+{
 call scriptErrorDlgOnNew;
+};
 
 };
 
