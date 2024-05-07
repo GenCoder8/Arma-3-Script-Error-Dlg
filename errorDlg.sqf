@@ -149,7 +149,7 @@ else // For errors without a file
 {
 //_emsgStart = _emsgStart + format [" in "" ... %1 ... "" ", trim (_filecontent) ];
 
-systemchat format [">>> %1 %2", _offset, _line];
+// systemchat format [">>> %1 %2", _offset, _line];
 
 _shortText = _filecontent;
 if(count _filecontent > 32) then
