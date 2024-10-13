@@ -24,7 +24,6 @@ class CfgFunctions
     preInit = 1; // Run on mission start
     recompile = 1;
    };
-
   };
  };
 };

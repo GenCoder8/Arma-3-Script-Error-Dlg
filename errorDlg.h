@@ -118,6 +118,33 @@ class TreeControlsGroup : RscControlsGroup
  y = SEDLG_BUT_H;
  w = 0.8;
  h = 0.8 - (SEDLG_BUT_H * 2) + 0.04;
+
+ // Something messing up scroll bar have to set all these
+	class VScrollbar
+	{
+		color[] = 
+		{
+			1,
+			1,
+			1,
+			1
+		};
+		width = 0.021;
+		autoScrollEnabled = 1;
+	};
+	class HScrollbar
+	{
+		color[] = 
+		{
+			1,
+			1,
+			1,
+			1
+		};
+		height = 0.028;
+	};
+
+ style = 0; // Need this instead of 16 for scrollbar arrows
 };
 
 class RscButton_1601: RscButton

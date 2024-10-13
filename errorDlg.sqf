@@ -28,7 +28,7 @@ _display = findDisplay SCRIPT_ERROR_DLG;
 private _ctrlsGroup = _display displayCtrl 1205;
 
 private _tvCtrl = _display ctrlCreate ["RscTree", 1200, _ctrlsGroup];
-_tvCtrl ctrlSetPosition [0,0,1.5,0.55];
+_tvCtrl ctrlSetPosition [0,0,2.5,0.55];
 _tvCtrl ctrlCommit 0;
 
 
