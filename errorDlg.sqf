@@ -21,6 +21,10 @@ private _display = findDisplay SCRIPT_ERROR_DLG;
 
 if(!isnull _display) exitWith {}; // Already open
 
+selectedErrorIndex = -1;
+selectedCallstackStep = 0;
+
+
 createDialog "ScriptErrorDlg";
 
 _display = findDisplay SCRIPT_ERROR_DLG;
@@ -64,7 +68,22 @@ if(_filename != "") then
  _gotoButon ctrlEnable true;
 };
 
-//systemchat format ["_line %1",  _line];
+ systemchat format ["_path %1",  _path];
+
+ selectedErrorIndex = _path # 0;
+
+if(count _path > 1) then
+{
+ selectedCallstackStep = _path # 1;
+}
+else
+{
+selectedCallstackStep = 0;
+};
+
+
+systemchat format ["_path %1 %2",  _path, selectedCallstackStep];
+
 
 }];
 
@@ -249,6 +268,8 @@ diag_log "allCutLayers:";
 
 };
 
+
+
 }];
 
 
@@ -299,6 +320,7 @@ private _earr = [_errid] + _errInfo;
 loggedErrors pushback _earr;
 
 
+
 _earr call scriptErrorDlgAdd;
 
 if(!isnil "scriptErrorDlgOnNew") then // In case too early for mission
@@ -313,6 +335,7 @@ scriptErrorDlgGotoLine =
 {
 params ["_file"];
 
+
 private _display = findDisplay SCRIPT_ERROR_DLG;
 
 private _tvCtrl = _display displayCtrl 1200;
@@ -323,6 +346,61 @@ private _filename = _tvCtrl tvData _selPath;
 private _line = _tvCtrl tvValue _selPath;
 
 
+//private _ret = "ArmaTools" callExtension ["GotoLine", [] ];
+
+//hint (str _ret);
+
+_errs = loggedErrors # selectedErrorIndex;
+
+_errs params ["_errid", "_msg","_file","_line","_offset","_filecontent","_trace"];
+
+// The items in treeview are in reversed order so get reversed index
+_actIndex = (count _trace - 1) - selectedCallstackStep;
+
+_tra = _trace # _actIndex;
+
+_tra params ["_file", "_line", "_scopeName", "_variables"];
+
+
+// Create JSON representation of the error
+
+private _callstack = createHashMap;
+private _lines = [];
+
+//diag_log format ["VAR: %1 %2", typename _variables, _variables];
+
+private _vars = _variables apply { createhashmapFromArray [["name",_x], ["value",_y], ["type", typename _y ]] };
+
+//_vars pushback (createhashmapFromArray [["var",["varname1",123]]]); 
+//_vars pushback (createhashmapFromArray [["var",["anotherVar",777]]]); 
+
+_file = _file regexReplace ["\\","/"];
+
+
+_lines pushback createhashmapFromArray [["filename",_file], ["vars", _vars]]; 
+ 
+_callstack set ["lines", _lines]; 
+
+
+_csJson = toJSON _callstack;
+
+_csJson = _csJson regexReplace ["""","'"];
+
+//_csJson = (_csJson regexReplace ['"',"'"]);
+
+
+copyToClipboard _csJson;
+
+
+
+hint format ["fl %1 %2 %3", selectedCallstackStep, _file, _line];
+
+// hint format ["_tra %1 %2 %3", selectedCallstackStep,  count _trace,  _tra];
+
+
+
+if(true) exitwith { //hint format ["test %1 %2",_filename,_line]; 
+};
 
 // systemchat format ["_line '%1' %2",  _filename, _line];
 
