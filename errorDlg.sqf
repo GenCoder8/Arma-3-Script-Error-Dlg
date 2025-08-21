@@ -193,6 +193,7 @@ private _tvmainindex = _tv tvAdd [[], _emsgStart ];
 
 [[_tvmainindex],_file,_line] call _gotoFile;
 
+// Use proper trace order
 for "_i" from (count _trace - 1) to 0 step -1 do
 {
  (_trace # _i) params ["_file", "_line", "_scopeName", "_variables"];
@@ -354,12 +355,12 @@ _errs = loggedErrors # selectedErrorIndex;
 
 _errs params ["_errid", "_msg","_file","_line","_offset","_filecontent","_trace"];
 
-// The items in treeview are in reversed order so get reversed index
-_actIndex = (count _trace - 1) - selectedCallstackStep;
+// The trace items in treeview are in reversed order so get reversed index
+_actualIndex = (count _trace - 1) - selectedCallstackStep;
 
-_tra = _trace # _actIndex;
+_traStep = _trace # _actualIndex;
 
-_tra params ["_file", "_line", "_scopeName", "_variables"];
+_traStep params ["_file", "_line", "_scopeName", "_variables"];
 
 
 // Create JSON representation of the error
@@ -377,7 +378,7 @@ private _vars = _variables apply { createhashmapFromArray [["name",_x], ["value"
 _file = _file regexReplace ["\\","/"];
 
 
-_lines pushback createhashmapFromArray [["filename",_file], ["vars", _vars]]; 
+_lines pushback createhashmapFromArray [["filename",_file], ["line", _line], ["vars", _vars]]; 
  
 _callstack set ["lines", _lines]; 
 
