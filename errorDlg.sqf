@@ -390,16 +390,20 @@ _csJson = _csJson regexReplace ["""","'"];
 //_csJson = (_csJson regexReplace ['"',"'"]);
 
 
-copyToClipboard _csJson;
+private _ret = "ArmaTools" callExtension ["GotoLine", [_csJson] ];
+
+diag_log format ["GotoLine %1", _ret ];
+
+// copyToClipboard _csJson;
 
 
 
-hint format ["fl %1 %2 %3", selectedCallstackStep, _file, _line];
+// hint format ["fl %1 %2 %3", selectedCallstackStep, _file, _line];
 
 // hint format ["_tra %1 %2 %3", selectedCallstackStep,  count _trace,  _tra];
 
 
-
+// Skip old code
 if(true) exitwith { //hint format ["test %1 %2",_filename,_line]; 
 };
 
