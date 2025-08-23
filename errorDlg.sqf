@@ -331,25 +331,11 @@ call scriptErrorDlgOnNew;
 
 };
 
-
-scriptErrorDlgGotoLine =
+scriptErrorDlgGotoError =
 {
-params ["_file"];
-
-
-private _display = findDisplay SCRIPT_ERROR_DLG;
-
-private _tvCtrl = _display displayCtrl 1200;
-
-private _selPath = tvCurSel _tvCtrl;
-
-private _filename = _tvCtrl tvData _selPath;
-private _line = _tvCtrl tvValue _selPath;
-
 
 //private _ret = "ArmaTools" callExtension ["GotoLine", [] ];
 
-//hint (str _ret);
 
 _errs = loggedErrors # selectedErrorIndex;
 
@@ -361,6 +347,9 @@ _actualIndex = (count _trace - 1) - selectedCallstackStep;
 _traStep = _trace # _actualIndex;
 
 _traStep params ["_file", "_line", "_scopeName", "_variables"];
+
+
+// hint format ["_file %1", _file];
 
 
 // Create JSON representation of the error
@@ -378,9 +367,9 @@ private _vars = _variables apply { createhashmapFromArray [["name",_x], ["value"
 _file = _file regexReplace ["\\","/"];
 
 
-_lines pushback createhashmapFromArray [["filename",_file], ["line", _line], ["vars", _vars]]; 
+_lines pushback createhashmapFromArray [["filename",_file], ["line", _line], ["vars", _vars]];
  
-_callstack set ["lines", _lines]; 
+_callstack set ["lines", _lines];
 
 
 _csJson = toJSON _callstack;
@@ -390,7 +379,7 @@ _csJson = _csJson regexReplace ["""","'"];
 //_csJson = (_csJson regexReplace ['"',"'"]);
 
 
-private _ret = "ArmaTools" callExtension ["GotoLine", [_csJson] ];
+private _ret = "ArmaTools" callExtension ["GotoError", [_csJson] ];
 
 diag_log format ["GotoLine %1", _ret ];
 
@@ -403,9 +392,25 @@ diag_log format ["GotoLine %1", _ret ];
 // hint format ["_tra %1 %2 %3", selectedCallstackStep,  count _trace,  _tra];
 
 
-// Skip old code
-if(true) exitwith { //hint format ["test %1 %2",_filename,_line]; 
 };
+
+
+scriptErrorDlgGotoLine =
+{
+params ["_file"];
+
+
+private _display = findDisplay SCRIPT_ERROR_DLG;
+
+private _tvCtrl = _display displayCtrl 1200;
+
+private _selPath = tvCurSel _tvCtrl;
+
+private _filename = _tvCtrl tvData _selPath;
+private _line = _tvCtrl tvValue _selPath;
+
+
+
 
 // systemchat format ["_line '%1' %2",  _filename, _line];
 

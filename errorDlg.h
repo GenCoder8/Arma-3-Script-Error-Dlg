@@ -185,6 +185,19 @@ class RscButton_1600: RscButton
 
 class RscButton_1602: RscButton
 {
+ action = "call scriptErrorDlgGotoError;";
+
+ idc = 1602;
+ text = "Goto error"; //--- ToDo: Localize;
+ x = 0.55;
+ y = 0;
+ w = SEDLG_BUT_W;
+ h = SEDLG_BUT_H;
+};
+
+/*
+class RscButton_1602: RscButton
+{
 	action = "call scriptErrorDlgGotoLine;";
 
 	idc = 1602;
@@ -194,6 +207,7 @@ class RscButton_1602: RscButton
  w = SEDLG_BUT_W;
  h = SEDLG_BUT_H;
 };
+*/
 
 class Version : RscText
 {
