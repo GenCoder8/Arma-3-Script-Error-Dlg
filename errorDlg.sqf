@@ -63,10 +63,7 @@ _gotoButon ctrlEnable false;
 private _filename = _tvCtrl tvData _path;
 private _line = _tvCtrl tvValue _path;
 
-if(_filename != "") then
-{
- _gotoButon ctrlEnable true;
-};
+
 
  systemchat format ["_path %1",  _path];
 
@@ -75,6 +72,12 @@ if(_filename != "") then
 if(count _path > 1) then
 {
  selectedCallstackStep = _path # 1;
+
+if(_filename != "") then // Allow only callstack jumps
+{
+ _gotoButon ctrlEnable true;
+};
+
 }
 else
 {
@@ -351,6 +354,8 @@ _traStep params ["_file", "_line", "_scopeName", "_variables"];
 
 // hint format ["_file %1", _file];
 
+if(_file != "") then
+{
 
 // Create JSON representation of the error
 
@@ -381,10 +386,14 @@ _csJson = _csJson regexReplace ["""","'"];
 
 private _ret = "ArmaTools" callExtension ["GotoError", [_csJson] ];
 
-diag_log format ["GotoLine %1", _ret ];
+diag_log format ["GotoError %1", _ret ];
 
 // copyToClipboard _csJson;
-
+}
+else
+{
+ hint "No file name";
+};
 
 
 // hint format ["fl %1 %2 %3", selectedCallstackStep, _file, _line];
@@ -426,7 +435,7 @@ systemchat format ["_editorArgs '%1' ", _editorArgs];
 
 diag_log format ["_filename %1 %2 ", _filename, _editorArgs];
 
-private _argLine = format [_editorArgs,  _filename , _line ];
+private _argLine = format [_editorArgs, _filename , _line ];
 
 diag_log format ["args set <%1> %2 ", _argLine, "test"];
 
