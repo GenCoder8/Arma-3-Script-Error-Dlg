@@ -369,7 +369,8 @@ private _vars = _variables apply { createhashmapFromArray [["name",_x], ["value"
 //_vars pushback (createhashmapFromArray [["var",["varname1",123]]]); 
 //_vars pushback (createhashmapFromArray [["var",["anotherVar",777]]]); 
 
-_file = _file regexReplace ["\\","/"];
+// keep arma format
+//_file = _file regexReplace ["\\","/"];
 
 
 _lines pushback createhashmapFromArray [["filename",_file], ["line", _line], ["vars", _vars]];
