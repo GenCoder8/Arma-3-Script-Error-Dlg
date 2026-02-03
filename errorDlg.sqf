@@ -339,7 +339,6 @@ scriptErrorDlgGotoError =
 
 //private _ret = "ArmaTools" callExtension ["GotoLine", [] ];
 
-
 _errs = loggedErrors # selectedErrorIndex;
 
 _errs params ["_errid", "_msg","_file","_line","_offset","_filecontent","_trace"];
@@ -364,7 +363,30 @@ private _lines = [];
 
 //diag_log format ["VAR: %1 %2", typename _variables, _variables];
 
-private _vars = _variables apply { createhashmapFromArray [["name",_x], ["value",_y], ["type", typename _y ]] };
+private _vars = _variables apply 
+{
+
+private _sentValue = switch (true) do
+{
+ case (_y isEqualType 0);
+ case (_y isEqualType true);
+ case (_y isEqualType "");
+ case (_y isEqualType []): { str _y };
+ default { "Unknown" };
+};
+
+createhashmapFromArray [["name",_x], ["value",_sentValue], ["type", typename _y ]] 
+};
+
+/*
+diag_log "var test";
+{
+
+diag_log format ["VAR: %1", _x];
+
+
+} foreach _vars;
+*/
 
 //_vars pushback (createhashmapFromArray [["var",["varname1",123]]]); 
 //_vars pushback (createhashmapFromArray [["var",["anotherVar",777]]]); 
@@ -372,6 +394,7 @@ private _vars = _variables apply { createhashmapFromArray [["name",_x], ["value"
 // keep arma format
 //_file = _file regexReplace ["\\","/"];
 
+//_file = _file regexReplace ["\\","\"];
 
 _lines pushback createhashmapFromArray [["filename",_file], ["line", _line], ["vars", _vars]];
  
@@ -384,6 +407,8 @@ _csJson = _csJson regexReplace ["""","'"];
 
 //_csJson = (_csJson regexReplace ['"',"'"]);
 
+
+diag_log format ["_csJson %1", _csJson ];
 
 private _ret = "ArmaTools" callExtension ["GotoError", [_csJson] ];
 
