@@ -370,15 +370,15 @@ private _sentValue = switch (true) do
 {
  case (_y isEqualType 0);
  case (_y isEqualType true);
- case (_y isEqualType "");
- case (_y isEqualType []): { str _y };
- default { "Unknown" };
+ case (_y isEqualType ""): { _y };
+ case (_y isEqualType []): { str _y }; // must turn array to string or fail
+ default { str _y };
 };
 
 createhashmapFromArray [["name",_x], ["value",_sentValue], ["type", typename _y ]] 
 };
 
-/*
+
 diag_log "var test";
 {
 
@@ -386,7 +386,7 @@ diag_log format ["VAR: %1", _x];
 
 
 } foreach _vars;
-*/
+
 
 //_vars pushback (createhashmapFromArray [["var",["varname1",123]]]); 
 //_vars pushback (createhashmapFromArray [["var",["anotherVar",777]]]); 
