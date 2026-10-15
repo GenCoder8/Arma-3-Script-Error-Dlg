@@ -375,6 +375,11 @@ private _sentValue = switch (true) do
  default { str _y };
 };
 
+if(_sentValue isEqualType "") then
+{
+_sentValue = _sentValue regexReplace ["'",'`'];
+};
+
 createhashmapFromArray [["name",_x], ["value",_sentValue], ["type", typename _y ]] 
 };
 
@@ -383,7 +388,6 @@ diag_log "var test";
 {
 
 diag_log format ["VAR: %1", _x];
-
 
 } foreach _vars;
 
@@ -403,9 +407,11 @@ _callstack set ["lines", _lines];
 
 _csJson = toJSON _callstack;
 
+
 _csJson = _csJson regexReplace ["""","'"];
 
 //_csJson = (_csJson regexReplace ['"',"'"]);
+//_csJson = _csJson regexReplace ["""",'"'];
 
 
 diag_log format ["_csJson %1", _csJson ];
