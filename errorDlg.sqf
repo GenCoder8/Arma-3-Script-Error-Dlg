@@ -365,22 +365,32 @@ private _lines = [];
 
 private _vars = _variables apply 
 {
+_x params ["_name","_type","_value"];
 
 private _sentValue = switch (true) do
 {
- case (_y isEqualType 0);
- case (_y isEqualType true);
- case (_y isEqualType ""): { _y };
- case (_y isEqualType []): { str _y }; // must turn array to string or fail
- default { str _y };
+ case (_value isEqualType 0);
+ case (_value isEqualType true);
+ case (_value isEqualType ""): { _value };
+ case (_value isEqualType []): { str _value }; // must turn array to string or fail
+ default { str _value };
 };
 
 if(_sentValue isEqualType "") then
 {
-_sentValue = _sentValue regexReplace ["'",'`'];
+_sentValue = _sentValue regexReplace ["'",'?'];
+
+_sentValue = _sentValue regexReplace ["""",'?'];
+
+//_sentValue = _sentValue regexReplace ["[",'!'];
+//_sentValue = _sentValue regexReplace ["]",'!'];
+
+//_sentValue = _sentValue regexReplace ["\'",'`'];
 };
 
-createhashmapFromArray [["name",_x], ["value",_sentValue], ["type", typename _y ]] 
+//diag_log format ["NAME: %1 > %2", _x, typename _x];
+
+createhashmapFromArray [["name",_name], ["value",_sentValue], ["type",_type]] 
 };
 
 
