@@ -271,6 +271,7 @@ if(typename _variablesHashmap == "HASHMAP") exitwith {};
 diag_log "Fixing vars......";
 
 {
+_t = _x;
 
 _t params ["_functionName", "_lineNumber", "_scopeName", "_variablesHashmap"];
 
