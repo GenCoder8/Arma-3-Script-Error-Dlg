@@ -258,9 +258,36 @@ addMissionEventHandler ["ScriptError",
 {
  params ["_msg","_file","_line","_offset","_filecontent","_trace"];
 
+// Fix for converting arrays vars to hashmap
+if(count _trace > 0) then
+{
+_t = _trace # 0;
+_t params ["_functionName", "_lineNumber", "_scopeName", "_variablesHashmap"];
+diag_log format ["_variablesHashmap is now %1", typename _variablesHashmap];
+
+// If ok no need to fix
+if(typename _variablesHashmap == "HASHMAP") exitwith {};
+
+diag_log "Fixing vars......";
+
+{
+
+_t params ["_functionName", "_lineNumber", "_scopeName", "_variablesHashmap"];
+
+_t set [3, createhashmapFromArray _variablesHashmap ];
+
+//diag_log format [">>>>>> %1", _variablesHashmap];
+
+} foreach _trace;
+
+_t = _trace # 0;
+_t params ["_functionName", "_lineNumber", "_scopeName", "_variablesHashmap"];
+diag_log format ["_variablesHashmap is after %1", typename _variablesHashmap];
+};
+
 _this call logErrorInfoScript;
 
-
+/*
 [] spawn
 {
 sleep 0.2;
@@ -271,7 +298,7 @@ diag_log "allCutLayers:";
 } foreach allCutLayers;
 
 };
-
+*/
 
 
 }];
@@ -365,15 +392,14 @@ private _lines = [];
 
 private _vars = _variables apply 
 {
-_x params ["_name","_type","_value"];
 
 private _sentValue = switch (true) do
 {
- case (_value isEqualType 0);
- case (_value isEqualType true);
- case (_value isEqualType ""): { _value };
- case (_value isEqualType []): { str _value }; // must turn array to string or fail
- default { str _value };
+ case (_y isEqualType 0);
+ case (_y isEqualType true);
+ case (_y isEqualType ""): { _y };
+ case (_y isEqualType []): { str _y }; // must turn array to string or fail
+ default { str _y };
 };
 
 if(_sentValue isEqualType "") then
@@ -382,15 +408,12 @@ _sentValue = _sentValue regexReplace ["'",'?'];
 
 _sentValue = _sentValue regexReplace ["""",'?'];
 
-//_sentValue = _sentValue regexReplace ["[",'!'];
-//_sentValue = _sentValue regexReplace ["]",'!'];
-
 //_sentValue = _sentValue regexReplace ["\'",'`'];
 };
 
-//diag_log format ["NAME: %1 > %2", _x, typename _x];
+diag_log format ["NAME: %1", _x];
 
-createhashmapFromArray [["name",_name], ["value",_sentValue], ["type",_type]] 
+createhashmapFromArray [["name",_x], ["value",_sentValue], ["type", typename _y ]] 
 };
 
 
